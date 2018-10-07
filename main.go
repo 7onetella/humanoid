@@ -24,6 +24,8 @@ var approvalRequired = []string{}
 var peers = []string{}
 var accounts = map[string]string{}
 var debug bool
+var authCommand string
+var sessionExpiredMessage string
 
 func init() {
 	debugEnv := os.Getenv("SLACK_BOT_DEBUG")
@@ -32,16 +34,10 @@ func init() {
 	}
 
 	token, ok := os.LookupEnv("SLACK_BOT_USER_OAUTH_ACCESS_TOKEN")
-	if !ok {
-		Println("SLACK_BOT_USER_OAUTH_ACCESS_TOKEN is required")
-		os.Exit(1)
-	}
+	AssertTrue(ok, "SLACK_BOT_USER_OAUTH_ACCESS_TOKEN is required")
 
 	botID, ok = os.LookupEnv("SLACK_BOT_MEMBER_ID")
-	if !ok {
-		Println("SLACK_BOT_MEMBER_ID is required")
-		os.Exit(1)
-	}
+	AssertTrue(ok, "SLACK_BOT_MEMBER_ID is required")
 
 	api = slack.New(token)
 	slack.SetLogger(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags))
@@ -157,6 +153,7 @@ func Execute(message string) string {
 	output, err := Exec(cmd, args)
 	if err != nil {
 		Println("Error     : " + err.Error())
+		Println()
 	}
 	return output
 }

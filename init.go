@@ -122,7 +122,15 @@ func ReadConfig(data []byte) ([]string, []string, []string, map[string]string) {
 
 		switch sectionName {
 		case "DEFAULT":
-			continue
+			for _, key := range section.Keys() {
+				name := key.Name()
+				switch name {
+				case "auth_command":
+					authCommand = key.Value()
+				case "session_expired_message":
+					sessionExpiredMessage = key.Value()
+				}
+			}
 		case "allowed":
 			body := section.Body()
 			lines := strings.Split(body, "\n")

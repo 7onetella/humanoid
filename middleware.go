@@ -11,6 +11,12 @@ func makeExecutionPoint() ExecutionPoint {
 		addendum := " -d --account " + req.account
 
 		output := Execute(req.message + addendum)
+		if strings.Contains(output, sessionExpiredMessage) {
+			authOutput := Execute(authCommand)
+			Println(authOutput)
+			Println()
+			output = Execute(req.message + addendum)
+		}
 
 		resp.message = output
 

@@ -22,6 +22,7 @@ var rtm *slack.RTM
 var allowedCommmands = []string{}
 var approvalRequired = []string{}
 var peers = []string{}
+var accounts = map[string]string{}
 var debug bool
 
 func init() {
@@ -78,7 +79,7 @@ func init() {
 		}
 	}
 
-	allowedCommmands, approvalRequired, peers = ReadConfig(configContent)
+	allowedCommmands, approvalRequired, peers, accounts = ReadConfig(configContent)
 
 }
 
@@ -99,7 +100,7 @@ func main() {
 			if len(event.User) == 0 {
 				continue
 			}
-			channel := event.Msg.Channel
+			channelID := event.Msg.Channel
 
 			PrintMessageEvent(api, event)
 
@@ -110,8 +111,9 @@ func main() {
 
 			message := RemoveMention(event)
 
-			req := decodeRequest(message, channel)
+			req := decodeRequest(message, channelID)
 
+			// execution point
 			resp, err := e(req)
 			if err != nil {
 				fmt.Println(err)
@@ -147,6 +149,10 @@ func AssertTrue(condition bool, errmsg string) {
 // Execute parses out command and executes it
 func Execute(message string) string {
 	cmd, args := GetCommandAndArgs(message)
+
+	combined := cmd + " " + strings.Join(args, " ")
+	Println("Executing " + combined)
+
 	output, err := Exec(cmd, args)
 	if err != nil {
 		Println(err.Error())
@@ -218,17 +224,30 @@ func ReplaceIDWithMention(s string) string {
 	return out
 }
 
-func decodeRequest(message, channel string) BotRequest {
+func decodeRequest(message, channelID string) BotRequest {
 	req := BotRequest{
-		message: message,
-		channel: channel,
+		message:   message,
+		channelID: channelID,
 	}
+
+	var channel string
+	ch := channels[channelID]
+	if len(ch) == 0 {
+		channel = groups[channelID]
+	} else {
+		channel = ch
+	}
+
+	account := accounts[channel]
+
+	req.account = account
+
 	return req
 }
 
 func encodeResponse(resp BotResponse) {
 
-	Respond(rtm, resp.message, resp.channel)
+	Respond(rtm, resp.message, resp.channelID)
 
 	Println()
 }

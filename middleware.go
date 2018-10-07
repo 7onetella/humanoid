@@ -5,10 +5,12 @@ import "strings"
 func makeExecutionPoint() ExecutionPoint {
 	return func(req BotRequest) (BotResponse, error) {
 		resp := BotResponse{
-			channel: req.channel,
+			channelID: req.channelID,
 		}
 
-		output := Execute(req.message)
+		addendum := " --account " + req.account
+
+		output := Execute(req.message + addendum)
 
 		resp.message = output
 
@@ -20,8 +22,8 @@ func makeCheckAllowedCommandMiddleWare() Middleware {
 	return func(next ExecutionPoint) ExecutionPoint {
 		return func(req BotRequest) (BotResponse, error) {
 			resp := BotResponse{
-				channel: req.channel,
-				message: "",
+				channelID: req.channelID,
+				message:   "",
 			}
 
 			if !req.approved && !IsAllowed(req.message) && !strings.HasSuffix(req.message, "help") {
@@ -42,8 +44,8 @@ func makeCheckApprovalRequiredCommandMiddleWare() Middleware {
 	return func(next ExecutionPoint) ExecutionPoint {
 		return func(req BotRequest) (BotResponse, error) {
 			resp := BotResponse{
-				channel: req.channel,
-				message: "",
+				channelID: req.channelID,
+				message:   "",
 			}
 
 			if !req.approved && IsApprovalRequired(req.message) && !strings.HasSuffix(req.message, "help") {
@@ -63,8 +65,8 @@ func makeCheckForApprovalKeywordMiddleWare() Middleware {
 	return func(next ExecutionPoint) ExecutionPoint {
 		return func(req BotRequest) (BotResponse, error) {
 			resp := BotResponse{
-				channel: req.channel,
-				message: "",
+				channelID: req.channelID,
+				message:   "",
 			}
 
 			if req.message == "pineapple" {

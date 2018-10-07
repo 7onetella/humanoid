@@ -100,7 +100,7 @@ func ReadFile(file string) ([]byte, error) {
 }
 
 // ReadConfig reads ini config
-func ReadConfig(data []byte) ([]string, []string, []string) {
+func ReadConfig(data []byte) ([]string, []string, []string, map[string]string) {
 
 	cfg, err := ini.LoadSources(ini.LoadOptions{
 		AllowNestedValues:   true,
@@ -115,6 +115,7 @@ func ReadConfig(data []byte) ([]string, []string, []string) {
 	allowed := []string{}
 	approvalRequired := []string{}
 	peers := []string{}
+	accounts := map[string]string{}
 
 	for _, section := range cfg.Sections() {
 		sectionName := section.Name()
@@ -143,11 +144,17 @@ func ReadConfig(data []byte) ([]string, []string, []string) {
 				line = strings.TrimSpace(line)
 				peers = append(peers, line)
 			}
+		case "accounts":
+			for _, key := range section.Keys() {
+				name := key.Name()
+				value := key.Value()
+				accounts[name] = value
+			}
 		}
 
 	}
 
-	return allowed, approvalRequired, peers
+	return allowed, approvalRequired, peers, accounts
 }
 
 // CreateConfigFile creates config.ini file

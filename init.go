@@ -129,6 +129,8 @@ func ReadConfig(data []byte) ([]string, []string, []string, map[string]string) {
 					authCommand = key.Value()
 				case "session_expired_message":
 					sessionExpiredMessage = key.Value()
+				case "auth_hold_message":
+					authHoldMessage = key.Value()
 				}
 			}
 		case "allowed":

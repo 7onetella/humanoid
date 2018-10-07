@@ -1,8 +1,12 @@
 package main
 
-import "strings"
+import (
+	"strings"
 
-func makeExecutionPoint() ExecutionPoint {
+	"github.com/nlopes/slack"
+)
+
+func makeExecutionPoint(rtm *slack.RTM) ExecutionPoint {
 	return func(req BotRequest) (BotResponse, error) {
 		resp := BotResponse{
 			channelID: req.channelID,
@@ -12,6 +16,8 @@ func makeExecutionPoint() ExecutionPoint {
 
 		output := Execute(req.message + addendum)
 		if strings.Contains(output, sessionExpiredMessage) {
+			Respond(rtm, authHoldMessage, req.channelID)
+
 			authOutput := Execute(authCommand)
 			Println(authOutput)
 			Println()

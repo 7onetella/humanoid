@@ -26,6 +26,7 @@ var accounts = map[string]string{}
 var debug bool
 var authCommand string
 var sessionExpiredMessage string
+var authHoldMessage string
 
 func init() {
 	debugEnv := os.Getenv("SLACK_BOT_DEBUG")
@@ -81,13 +82,13 @@ func init() {
 
 func main() {
 
-	e := makeExecutionPoint()
+	rtm = api.NewRTM()
+	go rtm.ManageConnection()
+
+	e := makeExecutionPoint(rtm)
 	e = makeCheckAllowedCommandMiddleWare()(e)
 	e = makeCheckApprovalRequiredCommandMiddleWare()(e)
 	e = makeCheckForApprovalKeywordMiddleWare()(e)
-
-	rtm = api.NewRTM()
-	go rtm.ManageConnection()
 
 	for msg := range rtm.IncomingEvents {
 		switch event := msg.Data.(type) {

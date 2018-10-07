@@ -151,11 +151,12 @@ func Execute(message string) string {
 	cmd, args := GetCommandAndArgs(message)
 
 	combined := cmd + " " + strings.Join(args, " ")
-	Println("Executing " + combined)
+	Println("Executing : " + combined)
+	Println()
 
 	output, err := Exec(cmd, args)
 	if err != nil {
-		Println(err.Error())
+		Println("Error     : " + err.Error())
 	}
 	return output
 }

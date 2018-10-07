@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/kyokomi/emoji"
 	"github.com/nlopes/slack"
-	"github.com/olekukonko/tablewriter"
 )
 
 // MessageLogger logger specialized for slack messages
@@ -53,12 +51,12 @@ func PrintMessageEvent(api *slack.Client, event *slack.MessageEvent) {
 		channel = emoji.Sprint(":hash:" + ch)
 	}
 
-	Println("Request")
-	if debug {
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"Text", "From", "Channel"})
-		table.Append([]string{text, userName, channel})
-		table.Render()
-	}
+	Println(fmt.Sprintf("Request   : %s | %s | %s", text, userName, channel))
+	// if debug {
+	// 	table := tablewriter.NewWriter(os.Stdout)
+	// 	table.SetHeader([]string{"Text", "From", "Channel"})
+	// 	table.Append([]string{text, userName, channel})
+	// 	table.Render()
+	// }
 	Println()
 }

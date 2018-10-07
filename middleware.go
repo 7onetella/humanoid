@@ -8,7 +8,7 @@ func makeExecutionPoint() ExecutionPoint {
 			channelID: req.channelID,
 		}
 
-		addendum := " --account " + req.account
+		addendum := " -d --account " + req.account
 
 		output := Execute(req.message + addendum)
 

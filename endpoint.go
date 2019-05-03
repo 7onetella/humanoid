@@ -8,6 +8,7 @@ type Middleware func(ExecutionPoint) ExecutionPoint
 
 // BotRequest request struct
 type BotRequest struct {
+	cmd       string
 	message   string
 	channelID string
 	approved  bool

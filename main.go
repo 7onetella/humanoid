@@ -28,6 +28,8 @@ var authCommand string
 var sessionExpiredMessage string
 var authHoldMessage string
 
+const morgan = "morgan"
+
 func init() {
 	debugEnv := os.Getenv("SLACK_BOT_DEBUG")
 	if len(debugEnv) > 0 && "true" == debugEnv {
@@ -180,10 +182,10 @@ func GetCommandAndArgs(textAfterMention string) (string, []string) {
 	tokens := strings.Fields(textAfterMention)
 
 	if len(tokens) == 1 {
-		return tokens[0], []string{}
+		return morgan, []string{}
 	}
 
-	return tokens[0], tokens[1:]
+	return morgan, tokens[1:]
 }
 
 // IsMessageNotDirectedAtBot is message directed at bot or not
@@ -240,6 +242,11 @@ func decodeRequest(message, channelID string) BotRequest {
 	account := accounts[channel]
 
 	req.account = account
+
+	fields := strings.Fields(message)
+	if len(fields) > 0 {
+		req.cmd = fields[0]
+	}
 
 	return req
 }

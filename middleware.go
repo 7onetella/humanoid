@@ -12,7 +12,10 @@ func makeExecutionPoint(rtm *slack.RTM) ExecutionPoint {
 			channelID: req.channelID,
 		}
 
-		addendum := " -d --account " + req.account
+		var addendum string
+		if req.cmd == "aws" {
+			addendum = " -d --account " + req.account
+		}
 
 		output := Execute(req.message + addendum)
 		if strings.Contains(output, sessionExpiredMessage) {

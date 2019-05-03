@@ -173,6 +173,7 @@ func Exec(cmd string, args []string) (string, error) {
 
 // RemoveMention remove mention
 func RemoveMention(event *slack.MessageEvent) string {
+	// event.Msg.Text excludes @morgan
 	textAfterMention := strings.Replace(event.Msg.Text, "<@"+botID+"> ", "", -1)
 	return textAfterMention
 }
@@ -181,11 +182,11 @@ func RemoveMention(event *slack.MessageEvent) string {
 func GetCommandAndArgs(textAfterMention string) (string, []string) {
 	tokens := strings.Fields(textAfterMention)
 
-	if len(tokens) == 1 {
+	if len(tokens) == 0 {
 		return morgan, []string{}
 	}
 
-	return morgan, tokens[1:]
+	return morgan, tokens
 }
 
 // IsMessageNotDirectedAtBot is message directed at bot or not

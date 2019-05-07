@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"regexp"
@@ -43,8 +42,8 @@ func init() {
 	AssertTrue(ok, "SLACK_BOT_MEMBER_ID is required")
 
 	api = slack.New(token)
-	slack.SetLogger(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags))
-	api.SetDebug(false)
+	// slack.SetLogger(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags))
+	// api.SetDebug(false)
 
 	logger.color = colorSupportedTerminal()
 

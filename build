@@ -1,0 +1,5 @@
+#!/bin/sh
+
+go get github.com/mitchellh/gox
+gox -osarch="linux/amd64"
+# mv humanioid.linux_amd64 ./dist/linux/tiny

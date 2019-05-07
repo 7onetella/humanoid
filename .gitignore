@@ -1,4 +1,5 @@
+!./dist/linux/amd64/humanoid
 humanoid-config.ini
 notes.txt
 init.sh
-humanoid
+./humanoid

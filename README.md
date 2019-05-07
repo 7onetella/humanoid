@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/7onetella/humanoid/tree/master.svg?style=svg)](https://circleci.com/gh/7onetella/humanoid/tree/master)
+
 # humanoid
 Generic chatbot for slack
 

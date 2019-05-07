@@ -31,6 +31,3 @@ jobs:
 
       - store_artifacts:
           path: /go/src/github.com/7onetella/humanoid/humanoid
-
-      - store_artifacts:
-          path: /go/src/github.com/7onetella/humanoid

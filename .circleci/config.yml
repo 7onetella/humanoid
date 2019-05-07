@@ -25,9 +25,9 @@ jobs:
       - run: go get -v -t -d ./...
       - run: go test -v ./...
       - run:
-        name: building binary
-        command: |
-          go build
+          name: building binary
+          command: |
+            go build
 
       - store_artifacts:
           path: /go/src/github.com/7onetella/humanoid/humanoid

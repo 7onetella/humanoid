@@ -64,7 +64,7 @@ func init() {
 		Println("error while accessing home directory")
 	}
 
-	configFile := home + "/.humanoid.config.ini"
+	configFile := home + "/humanoid-config.ini"
 
 	configContent, err := ReadFile(configFile)
 	// if this is first run and the user has not set up the config file

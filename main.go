@@ -16,7 +16,7 @@ var groups = map[string]string{}
 var users = map[string]string{}
 var logger = &MessageLogger{debug: true, color: false}
 var botID string
-var api *slack.Client
+var client *slack.Client
 var rtm *slack.RTM
 var allowedCommmands = []string{}
 var approvalRequired = []string{}
@@ -41,21 +41,21 @@ func init() {
 	botID, ok = os.LookupEnv("SLACK_BOT_MEMBER_ID")
 	AssertTrue(ok, "SLACK_BOT_MEMBER_ID is required")
 
-	api = slack.New(token)
+	client = slack.New(token)
 	// slack.SetLogger(log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags))
 	// api.SetDebug(false)
 
 	logger.color = colorSupportedTerminal()
 
-	populateChannels(api)
+	populateChannels(client)
 
 	showChannels()
 
-	populateGroups(api)
+	populateGroups(client)
 
 	showGroups()
 
-	populateUsers(api)
+	populateUsers(client)
 
 	showUsers()
 
@@ -83,7 +83,7 @@ func init() {
 
 func main() {
 
-	rtm = api.NewRTM()
+	rtm = client.NewRTM()
 	go rtm.ManageConnection()
 
 	e := makeExecutionPoint(rtm)
@@ -100,7 +100,7 @@ func main() {
 			}
 			channelID := event.Msg.Channel
 
-			PrintMessageEvent(api, event)
+			PrintMessageEvent(client, event)
 
 			if IsMessageNotDirectedAtBot(event) {
 				fmt.Println()
@@ -108,6 +108,8 @@ func main() {
 			}
 
 			message := RemoveMention(event)
+
+			message = RemoveSpecialFormatting(message)
 
 			req := decodeRequest(message, channelID)
 
@@ -175,6 +177,18 @@ func RemoveMention(event *slack.MessageEvent) string {
 	// event.Msg.Text excludes @morgan
 	textAfterMention := strings.Replace(event.Msg.Text, "<@"+botID+"> ", "", -1)
 	return textAfterMention
+}
+
+// RemoveSpecialFormatting removes special formatting for phone number, URL, etc.
+func RemoveSpecialFormatting(message string) string {
+	tokens := strings.Fields(message)
+	for i, token := range tokens {
+		if strings.HasPrefix(token, "<") && strings.HasSuffix(token, ">") && strings.Contains(token, "|") {
+			tokens[i] = strings.Replace(strings.Split(token, "|")[1], ">", "", 1)
+		}
+	}
+
+	return strings.Join(tokens, " ")
 }
 
 // GetCommandAndArgs returns command and its arguments

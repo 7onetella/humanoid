@@ -51,7 +51,7 @@ func PrintMessageEvent(api *slack.Client, event *slack.MessageEvent) {
 		channel = emoji.Sprint(":hash:" + ch)
 	}
 
-	Println(fmt.Sprintf("Request   : %s | %s | %s", text, userName, channel))
+	Println(fmt.Sprintf("Message Event  : %s | %s | %s", text, userName, channel))
 	// if debug {
 	// 	table := tablewriter.NewWriter(os.Stdout)
 	// 	table.SetHeader([]string{"Text", "From", "Channel"})
